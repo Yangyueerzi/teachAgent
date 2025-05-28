@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家长辅导助手 - 原型展示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://tdesign.tencent.com/miniprogram/dist/index.css">
+    <style>
+        /* iPhone 15 Pro 尺寸: 393 x 852 */
+        .phone-frame {
+            width: 393px;
+            height: 852px;
+            border-radius: 40px;
+            border: 8px solid #1f2937;
+            background: #000;
+            padding: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 32px;
+            overflow: hidden;
+            background: #fff;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .prototype-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .page-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="prototype-grid">
+        <!-- 首页/辅导页面 -->
+        <div>
+            <div class="page-title">首页 - 辅导</div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <iframe src="home.html"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 拍照上传页面 -->
+        <div>
+            <div class="page-title">拍照上传</div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <iframe src="upload.html"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 听写练习页面 -->
+        <div>
+            <div class="page-title">听写练习</div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <iframe src="practice.html"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果页面 -->
+        <div>
+            <div class="page-title">听写结果</div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <iframe src="result.html"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的页面 -->
+        <div>
+            <div class="page-title">我的</div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <iframe src="profile.html"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 登录页面 -->
+        <div>
+            <div class="page-title">登录页面</div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <iframe src="login.html"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

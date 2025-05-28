@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>辅导</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .main-content {
+            height: calc(100vh - 44px - 80px);
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: #fff;
+            border-top: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #999;
+            font-size: 12px;
+        }
+        .tab-item.active {
+            color: #0052d9;
+        }
+        .tab-icon {
+            width: 24px;
+            height: 24px;
+            background-size: contain;
+        }
+        .feature-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #f0f0f0;
+        }
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #0052d9, #0085ff);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #0052d9, #0085ff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,82,217,0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <span>9:41</span>
+        <span>家长辅导助手</span>
+        <span>100%</span>
+    </div>
+
+    <!-- 主要内容 -->
+    <div class="main-content">
+        <!-- 欢迎区域 -->
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">欢迎使用辅导助手</h1>
+            <p class="text-gray-600">让学习变得更简单有趣</p>
+        </div>
+
+        <!-- 单词听写功能卡片 -->
+        <div class="feature-card">
+            <div class="feature-icon">
+                <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">单词听写</h3>
+            <p class="text-gray-600 text-sm mb-4">拍照识别单词表，智能语音听写练习</p>
+            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                <span>📸 拍照识别</span>
+                <span>🔊 语音播报</span>
+                <span>✅ 智能校验</span>
+            </div>
+            <button class="btn-primary">开始听写</button>
+        </div>
+
+        <!-- 即将推出功能 -->
+        <div class="feature-card opacity-60">
+            <div class="feature-icon" style="background: #ccc;">
+                <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">数学口算</h3>
+            <p class="text-gray-600 text-sm mb-4">即将推出，敬请期待</p>
+            <button class="btn-primary" style="background: #ccc;" disabled>敬请期待</button>
+        </div>
+
+        <div class="feature-card opacity-60">
+            <div class="feature-icon" style="background: #ccc;">
+                <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+                    <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">阅读理解</h3>
+            <p class="text-gray-600 text-sm mb-4">即将推出，敬请期待</p>
+            <button class="btn-primary" style="background: #ccc;" disabled>敬请期待</button>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="tab-bar">
+        <div class="tab-item active">
+            <div class="tab-icon">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+            </div>
+            <span>辅导</span>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            </div>
+            <span>我的</span>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>听写练习</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            height: 44px;
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .main-content {
+            height: calc(100vh - 44px);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .progress-bar {
+            background: #e5e7eb;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #0052d9, #0085ff);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .word-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #0052d9, #0085ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .play-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,82,217,0.3);
+        }
+        .play-button.playing {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .input-area {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .input-display {
+            background: #f8faff;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #374151;
+        }
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .key {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .key:active {
+            background: #0052d9;
+            color: white;
+            transform: scale(0.95);
+        }
+        .key.pressed {
+            background: #0052d9;
+            color: white;
+            transform: scale(0.95);
+        }
+        .control-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #0052d9, #0085ff);
+            color: white;
+        }
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .feedback.show {
+            opacity: 1;
+        }
+        .feedback.correct {
+            background: rgba(34, 197, 94, 0.9);
+        }
+        .feedback.incorrect {
+            background: rgba(239, 68, 68, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <div class="header">
+        <button class="text-blue-600 font-medium">← 返回</button>
+        <span class="font-semibold">听写练习</span>
+        <button class="text-blue-600 font-medium">暂停</button>
+    </div>
+
+    <!-- 主要内容 -->
+    <div class="main-content">
+        <!-- 进度条 -->
+        <div class="mb-4">
+            <div class="flex justify-between text-sm text-gray-600 mb-2">
+                <span>第 <span id="currentWord">1</span> / <span id="totalWords">6</span> 个单词</span>
+                <span>正确率: <span id="accuracy">0%</span></span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 16.7%"></div>
+            </div>
+        </div>
+
+        <!-- 单词播放区域 -->
+        <div class="word-card">
+            <button class="play-button" id="playButton" onclick="playWord()">
+                <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+            </button>
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">点击播放单词</h2>
+            <p class="text-gray-600">听清楚后，长按下方字母键拼写</p>
+            <div class="mt-4 text-sm text-gray-500">
+                💡 提示：可以重复播放多次
+            </div>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="input-area">
+            <div class="input-display" id="inputDisplay">
+                <span class="text-gray-400">开始拼写...</span>
+            </div>
+            
+            <!-- 字母键盘 -->
+            <div class="keyboard" id="keyboard">
+                <!-- 第一行 -->
+                <div class="key" data-letter="q">Q</div>
+                <div class="key" data-letter="w">W</div>
+                <div class="key" data-letter="e">E</div>
+                <div class="key" data-letter="r">R</div>
+                <div class="key" data-letter="t">T</div>
+                <div class="key" data-letter="y">Y</div>
+                <!-- 第二行 -->
+                <div class="key" data-letter="u">U</div>
+                <div class="key" data-letter="i">I</div>
+                <div class="key" data-letter="o">O</div>
+                <div class="key" data-letter="p">P</div>
+                <div class="key" data-letter="a">A</div>
+                <div class="key" data-letter="s">S</div>
+                <!-- 第三行 -->
+                <div class="key" data-letter="d">D</div>
+                <div class="key" data-letter="f">F</div>
+                <div class="key" data-letter="g">G</div>
+                <div class="key" data-letter="h">H</div>
+                <div class="key" data-letter="j">J</div>
+                <div class="key" data-letter="k">K</div>
+                <!-- 第四行 -->
+                <div class="key" data-letter="l">L</div>
+                <div class="key" data-letter="z">Z</div>
+                <div class="key" data-letter="x">X</div>
+                <div class="key" data-letter="c">C</div>
+                <div class="key" data-letter="v">V</div>
+                <div class="key" data-letter="b">B</div>
+                <!-- 第五行 -->
+                <div class="key" data-letter="n">N</div>
+                <div class="key" data-letter="m">M</div>
+                <div class="key" style="grid-column: span 2; background: #ef4444; color: white;" onclick="clearInput()">清除</div>
+                <div class="key" style="grid-column: span 2; background: #22c55e; color: white;" onclick="submitWord()">提交</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 反馈提示 -->
+    <div class="feedback" id="feedback"></div>
+
+    <script>
+        const words = ['apple', 'banana', 'orange', 'grape', 'watermelon', 'strawberry'];
+        let currentWordIndex = 0;
+        let currentInput = '';
+        let correctCount = 0;
+        let isPlaying = false;
+
+        // 初始化键盘事件
+        document.addEventListener('DOMContentLoaded', function() {
+            const keys = document.querySelectorAll('.key[data-letter]');
+            keys.forEach(key => {
+                key.addEventListener('mousedown', function() {
+                    const letter = this.dataset.letter;
+                    addLetter(letter);
+                    this.classList.add('pressed');
+                });
+                
+                key.addEventListener('mouseup', function() {
+                    this.classList.remove('pressed');
+                });
+                
+                key.addEventListener('mouseleave', function() {
+                    this.classList.remove('pressed');
+                });
+            });
+        });
+
+        function playWord() {
+            const playButton = document.getElementById('playButton');
+            if (isPlaying) return;
+            
+            isPlaying = true;
+            playButton.classList.add('playing');
+            
+            // 模拟播放音频
+            setTimeout(() => {
+                isPlaying = false;
+                playButton.classList.remove('playing');
+            }, 1500);
+        }
+
+        function addLetter(letter) {
+            currentInput += letter;
+            updateInputDisplay();
+        }
+
+        function updateInputDisplay() {
+            const display = document.getElementById('inputDisplay');
+            if (currentInput) {
+                display.innerHTML = currentInput.toUpperCase();
+                display.style.color = '#374151';
+            } else {
+                display.innerHTML = '<span class="text-gray-400">开始拼写...</span>';
+            }
+        }
+
+        function clearInput() {
+            currentInput = '';
+            updateInputDisplay();
+        }
+
+        function submitWord() {
+            if (!currentInput) return;
+            
+            const currentWord = words[currentWordIndex];
+            const isCorrect = currentInput.toLowerCase() === currentWord.toLowerCase();
+            
+            if (isCorrect) {
+                correctCount++;
+                showFeedback('正确！', 'correct');
+            } else {
+                showFeedback(`错误！正确答案是：${currentWord}`, 'incorrect');
+            }
+            
+            setTimeout(() => {
+                nextWord();
+            }, 2000);
+        }
+
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = message;
+            feedback.className = `feedback show ${type}`;
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        function nextWord() {
+            currentWordIndex++;
+            currentInput = '';
+            updateInputDisplay();
+            updateProgress();
+            
+            if (currentWordIndex >= words.length) {
+                // 完成所有单词，跳转到结果页
+                setTimeout(() => {
+                    alert('听写完成！即将查看结果');
+                }, 500);
+            }
+        }
+
+        function updateProgress() {
+            document.getElementById('currentWord').textContent = currentWordIndex + 1;
+            document.getElementById('totalWords').textContent = words.length;
+            
+            const accuracy = Math.round((correctCount / Math.max(currentWordIndex, 1)) * 100);
+            document.getElementById('accuracy').textContent = accuracy + '%';
+            
+            const progress = ((currentWordIndex + 1) / words.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // 初始化
+        updateProgress();
+    </script>
+</body>
+</html> 

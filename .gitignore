@@ -11,6 +11,11 @@ yarn.lock
 Thumbs.db
 miniProgram/miniProgram_npm
 
+# 微信小程序npm构建产物
+miniprogram/miniprogram_npm/
+miniprogram/node_modules/
+miniprogram/package-lock.json
+
 # 编辑器和IDE配置
 .vscode/
 .idea/

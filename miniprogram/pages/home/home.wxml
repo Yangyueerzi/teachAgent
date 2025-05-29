@@ -1,0 +1,77 @@
+<view class="home-container">
+  <!-- 欢迎区域 -->
+  <view class="welcome-section">
+    <view class="welcome-title">欢迎使用辅导助手</view>
+    <view class="welcome-subtitle">让学习变得更简单有趣</view>
+  </view>
+
+  <!-- 功能卡片区域 -->
+  <view class="feature-section">
+    <!-- 单词听写功能卡片 -->
+    <view class="feature-card">
+      <view class="feature-icon">
+        <t-icon name="check-circle" size="48rpx" color="#ffffff" />
+      </view>
+      <view class="feature-content">
+        <view class="feature-title">单词听写</view>
+        <view class="feature-desc">拍照识别单词表，智能语音听写练习</view>
+        <view class="feature-tags">
+          <t-tag size="small" variant="light" theme="primary">📸 拍照识别</t-tag>
+          <t-tag size="small" variant="light" theme="primary">🔊 语音播报</t-tag>
+          <t-tag size="small" variant="light" theme="primary">✅ 智能校验</t-tag>
+        </view>
+      </view>
+      <t-button 
+        theme="primary" 
+        size="large" 
+        block 
+        bind:tap="startDictation"
+        class="feature-btn"
+      >
+        开始听写
+      </t-button>
+    </view>
+
+    <!-- 即将推出功能 -->
+    <view class="feature-card disabled">
+      <view class="feature-icon disabled">
+        <t-icon name="calculation" size="48rpx" color="#cccccc" />
+      </view>
+      <view class="feature-content">
+        <view class="feature-title">数学口算</view>
+        <view class="feature-desc">即将推出，敬请期待</view>
+      </view>
+      <t-button 
+        theme="default" 
+        size="large" 
+        block 
+        disabled
+        class="feature-btn"
+      >
+        敬请期待
+      </t-button>
+    </view>
+
+    <view class="feature-card disabled">
+      <view class="feature-icon disabled">
+        <t-icon name="book" size="48rpx" color="#cccccc" />
+      </view>
+      <view class="feature-content">
+        <view class="feature-title">阅读理解</view>
+        <view class="feature-desc">即将推出，敬请期待</view>
+      </view>
+      <t-button 
+        theme="default" 
+        size="large" 
+        block 
+        disabled
+        class="feature-btn"
+      >
+        敬请期待
+      </t-button>
+    </view>
+  </view>
+</view>
+
+<!-- Toast 组件 -->
+<t-toast id="t-toast" /> 

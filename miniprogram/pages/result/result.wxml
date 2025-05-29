@@ -1,0 +1,125 @@
+<view class="result-container">
+  <!-- 成绩卡片 -->
+  <view class="score-section">
+    <view class="score-card">
+      <view class="score-circle">
+        <view class="score-inner">
+          <view class="score-text">{{accuracy}}%</view>
+          <view class="score-label">正确率</view>
+        </view>
+      </view>
+      <view class="score-title">听写完成！</view>
+      <view class="score-desc">{{encourageMessage}}</view>
+    </view>
+  </view>
+
+  <!-- 统计数据 -->
+  <view class="stats-section">
+    <t-grid column="3" border="{{false}}">
+      <t-grid-item>
+        <view class="stat-item">
+          <view class="stat-number">{{totalWords}}</view>
+          <view class="stat-label">总单词数</view>
+        </view>
+      </t-grid-item>
+      <t-grid-item>
+        <view class="stat-item">
+          <view class="stat-number">{{correctCount}}</view>
+          <view class="stat-label">正确数</view>
+        </view>
+      </t-grid-item>
+      <t-grid-item>
+        <view class="stat-item">
+          <view class="stat-number">{{wrongCount}}</view>
+          <view class="stat-label">错误数</view>
+        </view>
+      </t-grid-item>
+    </t-grid>
+  </view>
+
+  <!-- 错误单词列表 -->
+  <view class="wrong-section" wx:if="{{wrongWords.length > 0}}">
+    <view class="section-title">错误单词 ({{wrongWords.length}}个)</view>
+    <t-cell-group>
+      <t-cell 
+        wx:for="{{wrongWords}}" 
+        wx:key="index"
+        title="{{item.word}}"
+        description="你的拼写: {{item.userInput}}"
+        right-icon="chevron-right"
+        bind:click="handleWordAction"
+        data-word="{{item.word}}"
+        data-index="{{index}}"
+      >
+        <view slot="note" class="word-actions">
+          <t-button 
+            size="small" 
+            theme="primary" 
+            variant="outline"
+            bind:tap="playWord"
+            data-word="{{item.word}}"
+            catch:tap="stopPropagation"
+          >
+            🔊 重听
+          </t-button>
+          <t-button 
+            size="small" 
+            theme="warning" 
+            variant="outline"
+            bind:tap="retryWord"
+            data-word="{{item.word}}"
+            catch:tap="stopPropagation"
+          >
+            ✏️ 重写
+          </t-button>
+        </view>
+      </t-cell>
+    </t-cell-group>
+  </view>
+
+  <!-- 学习建议 -->
+  <view class="tips-section" wx:if="{{suggestions.length > 0}}">
+    <view class="tips-title">💡 学习建议</view>
+    <view class="tips-content">
+      <view 
+        class="tip-item" 
+        wx:for="{{suggestions}}" 
+        wx:key="index"
+      >
+        • {{item}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作按钮 -->
+  <view class="action-section">
+    <t-button 
+      theme="default" 
+      size="large" 
+      bind:tap="goHome"
+      class="action-btn"
+    >
+      返回首页
+    </t-button>
+    <t-button 
+      theme="primary" 
+      size="large" 
+      bind:tap="practiceAgain"
+      class="action-btn"
+    >
+      重新练习
+    </t-button>
+  </view>
+</view>
+
+<!-- 庆祝动画 -->
+<view class="celebration {{showCelebration ? 'show' : ''}}" wx:if="{{showCelebration}}">
+  <view class="celebration-content">
+    <view class="celebration-emoji">🎉</view>
+    <view class="celebration-title">太棒了！</view>
+    <view class="celebration-desc">正确率达到{{accuracy}}%</view>
+  </view>
+</view>
+
+<!-- Toast 组件 -->
+<t-toast id="t-toast" /> 

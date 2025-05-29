@@ -1,0 +1,161 @@
+<view class="upload-container">
+  <!-- 拍照提示 -->
+  <view class="tips-section">
+    <view class="tips-title">📸 拍照小贴士</view>
+    <view class="tips-content">
+      <view class="tip-item">• 确保单词表清晰可见，光线充足</view>
+      <view class="tip-item">• 避免反光和阴影遮挡</view>
+      <view class="tip-item">• 单词表尽量平整，避免弯曲</view>
+      <view class="tip-item">• 支持多行单词，系统会自动识别</view>
+    </view>
+  </view>
+
+  <!-- 上传区域 -->
+  <view class="upload-section" wx:if="{{!imageUrl && !isProcessing && !recognizedWords.length}}">
+    <view class="upload-area" bind:tap="chooseUploadMethod">
+      <view class="upload-icon">
+        <t-icon name="upload" size="64rpx" color="#9ca3af" />
+      </view>
+      <view class="upload-title">上传单词表照片</view>
+      <view class="upload-desc">点击下方按钮选择照片或拍照</view>
+    </view>
+    
+    <view class="upload-buttons">
+      <t-button 
+        theme="default" 
+        size="large" 
+        bind:tap="chooseFromAlbum"
+        class="upload-btn"
+      >
+        📱 从相册选择
+      </t-button>
+      <t-button 
+        theme="primary" 
+        size="large" 
+        bind:tap="takePhoto"
+        class="upload-btn"
+      >
+        📷 拍照
+      </t-button>
+    </view>
+  </view>
+
+  <!-- 预览区域 -->
+  <view class="preview-section" wx:if="{{imageUrl && !isProcessing && !recognizedWords.length}}">
+    <view class="preview-card">
+      <view class="preview-title">照片预览</view>
+      <image 
+        src="{{imageUrl}}" 
+        mode="aspectFit" 
+        class="preview-image"
+        lazy-load="{{true}}"
+        show-menu-by-longpress="{{true}}"
+      />
+      <view class="preview-buttons">
+        <t-button 
+          theme="default" 
+          size="large" 
+          bind:tap="retakePhoto"
+          class="preview-btn"
+        >
+          重新拍照
+        </t-button>
+        <t-button 
+          theme="primary" 
+          size="large" 
+          bind:tap="confirmUpload"
+          class="preview-btn"
+        >
+          确认上传
+        </t-button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 处理中状态 -->
+  <view class="processing-section" wx:if="{{isProcessing}}">
+    <view class="processing-card">
+      <view class="processing-icon">
+        <t-loading theme="circular" size="80rpx" />
+      </view>
+      <view class="processing-title">正在识别单词...</view>
+      <view class="processing-desc">{{processingStep}}</view>
+      
+      <!-- 进度条 -->
+      <view class="progress-container">
+        <t-progress 
+          percentage="{{uploadProgress}}" 
+          theme="primary"
+          stroke-width="8"
+          show-info="{{true}}"
+        />
+      </view>
+      
+      <!-- 处理步骤 -->
+      <view class="steps-container">
+        <view class="step-item {{uploadProgress >= 20 ? 'completed' : uploadProgress > 0 ? 'active' : ''}}">
+          <view class="step-icon">
+            <t-icon name="{{uploadProgress >= 20 ? 'check' : 'upload'}}" size="32rpx" />
+          </view>
+          <view class="step-text">上传图片</view>
+        </view>
+        <view class="step-item {{uploadProgress >= 50 ? 'completed' : uploadProgress >= 20 ? 'active' : ''}}">
+          <view class="step-icon">
+            <t-icon name="{{uploadProgress >= 50 ? 'check' : 'scan'}}" size="32rpx" />
+          </view>
+          <view class="step-text">识别单词</view>
+        </view>
+        <view class="step-item {{uploadProgress >= 80 ? 'completed' : uploadProgress >= 50 ? 'active' : ''}}">
+          <view class="step-icon">
+            <t-icon name="{{uploadProgress >= 80 ? 'check' : 'setting'}}" size="32rpx" />
+          </view>
+          <view class="step-text">处理结果</view>
+        </view>
+        <view class="step-item {{uploadProgress >= 100 ? 'completed' : uploadProgress >= 80 ? 'active' : ''}}">
+          <view class="step-icon">
+            <t-icon name="{{uploadProgress >= 100 ? 'check' : 'check-circle'}}" size="32rpx" />
+          </view>
+          <view class="step-text">完成</view>
+        </view>
+      </view>
+      
+      <view class="processing-time">
+        <text wx:if="{{uploadProgress < 50}}">预计需要 10-30 秒</text>
+        <text wx:elif="{{uploadProgress < 80}}">正在使用AI识别，请稍候...</text>
+        <text wx:else="{{uploadProgress < 100}}">即将完成...</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 识别结果 -->
+  <view class="result-section" wx:if="{{recognizedWords.length > 0}}">
+    <view class="result-card">
+      <view class="result-title">识别到的单词</view>
+      <view class="words-grid">
+        <view 
+          class="word-item" 
+          wx:for="{{recognizedWords}}" 
+          wx:key="index"
+        >
+          {{item}}
+        </view>
+      </view>
+      <view class="result-count">共识别到 {{recognizedWords.length}} 个单词</view>
+      <t-button 
+        theme="primary" 
+        size="large" 
+        block
+        bind:tap="startPractice"
+        class="start-btn"
+      >
+        开始听写练习
+      </t-button>
+    </view>
+  </view>
+</view>
+
+<!-- Toast 组件 -->
+<t-toast id="t-toast" />
+
+<!-- Dialog 组件 -->
+<t-dialog id="t-dialog" /> 

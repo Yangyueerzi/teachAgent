@@ -9,7 +9,7 @@ yarn.lock
 # 微信小程序相关
 .DS_Store
 Thumbs.db
-miniProgram
+miniProgram/miniProgram_npm
 
 # 编辑器和IDE配置
 .vscode/

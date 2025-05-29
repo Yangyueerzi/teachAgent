@@ -1,0 +1,133 @@
+<view class="profile-container">
+  <!-- 用户信息卡片 -->
+  <view class="user-section" wx:if="{{userInfo}}">
+    <view class="user-card">
+      <t-avatar 
+        size="large" 
+        image="{{userInfo.avatarUrl || ''}}"
+        class="user-avatar"
+      >
+        {{userInfo.nickName ? userInfo.nickName.charAt(0) : '用'}}
+      </t-avatar>
+      <view class="user-info">
+        <view class="user-name">{{userInfo.nickName || '用户'}}</view>
+        <view class="user-desc">{{userInfo.grade || '小学生'}}</view>
+      </view>
+      
+      <view class="user-stats">
+        <view class="stat-item">
+          <view class="stat-number">{{studyStats.totalPractices}}</view>
+          <view class="stat-label">练习次数</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-number">{{studyStats.averageAccuracy}}%</view>
+          <view class="stat-label">平均正确率</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-number">{{studyStats.masteredWords}}</view>
+          <view class="stat-label">掌握单词</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 未登录状态 -->
+  <view class="login-section" wx:else>
+    <view class="login-card">
+      <view class="login-icon">👤</view>
+      <view class="login-title">欢迎使用辅导助手</view>
+      <view class="login-desc">登录后可查看学习记录和错误单词本</view>
+      <t-button 
+        theme="primary" 
+        size="large" 
+        bind:tap="goToLogin"
+        class="login-btn"
+      >
+        立即登录
+      </t-button>
+    </view>
+  </view>
+
+  <!-- 学习记录 -->
+  <view class="records-section" wx:if="{{userInfo && studyRecords.length > 0}}">
+    <view class="section-title">最近练习记录</view>
+    <t-cell-group>
+      <t-cell 
+        wx:for="{{studyRecords}}" 
+        wx:key="index"
+        title="{{item.title}}"
+        description="{{item.description}}"
+        right-icon="chevron-right"
+        bind:click="viewRecord"
+        data-index="{{index}}"
+      >
+        <view slot="note" class="record-score">
+          <view class="score-text">{{item.accuracy}}%</view>
+          <view class="score-label">正确率</view>
+        </view>
+      </t-cell>
+    </t-cell-group>
+  </view>
+
+  <!-- 错误单词本 -->
+  <view class="wrong-words-section" wx:if="{{userInfo && wrongWordsList.length > 0}}">
+    <view class="section-title">错误单词本 ({{wrongWordsList.length}}个)</view>
+    <t-cell-group>
+      <t-cell 
+        wx:for="{{wrongWordsList}}" 
+        wx:key="index"
+        title="{{item.word}}"
+        description="错误次数: {{item.errorCount}}次"
+        right-icon="chevron-right"
+        bind:click="practiceWrongWord"
+        data-word="{{item.word}}"
+      >
+        <view slot="left-icon">
+          <t-tag 
+            size="small" 
+            theme="{{item.status === 'mastered' ? 'success' : 'warning'}}"
+            variant="light"
+          >
+            {{item.status === 'mastered' ? '已掌握' : '需复习'}}
+          </t-tag>
+        </view>
+      </t-cell>
+    </t-cell-group>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section" wx:if="{{userInfo}}">
+    <t-cell-group>
+      <t-cell 
+        title="学习统计" 
+        left-icon="chart-bar" 
+        right-icon="chevron-right"
+        bind:click="viewStatistics"
+      />
+      <t-cell 
+        title="设置" 
+        left-icon="setting" 
+        right-icon="chevron-right"
+        bind:click="openSettings"
+      />
+      <t-cell 
+        title="帮助与反馈" 
+        left-icon="help-circle" 
+        right-icon="chevron-right"
+        bind:click="openHelp"
+      />
+      <t-cell 
+        title="退出登录" 
+        left-icon="logout" 
+        right-icon="chevron-right"
+        bind:click="logout"
+      />
+    </t-cell-group>
+  </view>
+</view>
+
+<!-- Toast 组件 -->
+<t-toast id="t-toast" />
+
+<!-- Dialog 组件 -->
+<t-dialog id="t-dialog" /> 

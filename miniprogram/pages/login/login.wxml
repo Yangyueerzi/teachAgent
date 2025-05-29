@@ -1,0 +1,109 @@
+<view class="login-container">
+  <!-- 顶部Logo区域 -->
+  <view class="logo-section">
+    <view class="logo-icon">📚</view>
+    <view class="logo-title">家长辅导助手</view>
+    <view class="logo-desc">让学习变得更简单有趣</view>
+  </view>
+
+  <!-- 登录方式选择 -->
+  <view class="login-methods">
+    <!-- 微信登录 -->
+    <view class="login-card">
+      <view class="method-icon">
+        <t-icon name="logo-wechat" size="48rpx" color="#07c160" />
+      </view>
+      <view class="method-content">
+        <view class="method-title">微信一键登录</view>
+        <view class="method-desc">使用微信账号快速登录，安全便捷</view>
+      </view>
+      <t-button 
+        theme="primary" 
+        size="large" 
+        bind:tap="wechatLogin"
+        class="method-btn"
+      >
+        微信登录
+      </t-button>
+    </view>
+
+    <!-- 手机号登录 -->
+    <view class="login-card">
+      <view class="method-icon">
+        <t-icon name="mobile" size="48rpx" color="#0052d9" />
+      </view>
+      <view class="method-content">
+        <view class="method-title">手机号登录</view>
+        <view class="method-desc">使用手机号验证码登录</view>
+      </view>
+      
+      <!-- 手机号输入 -->
+      <view class="phone-input-section" wx:if="{{showPhoneInput}}">
+        <t-input 
+          placeholder="请输入手机号" 
+          type="number"
+          maxlength="11"
+          value="{{phoneNumber}}"
+          bind:change="onPhoneChange"
+          class="phone-input"
+        />
+        
+        <view class="code-input-row">
+          <t-input 
+            placeholder="验证码" 
+            type="number"
+            maxlength="6"
+            value="{{verifyCode}}"
+            bind:change="onCodeChange"
+            class="code-input"
+          />
+          <t-button 
+            theme="default" 
+            size="medium"
+            bind:tap="sendCode"
+            disabled="{{!canSendCode || codeCountdown > 0}}"
+            class="send-code-btn"
+          >
+            {{codeCountdown > 0 ? codeCountdown + 's' : '发送验证码'}}
+          </t-button>
+        </view>
+        
+        <t-button 
+          theme="primary" 
+          size="large" 
+          bind:tap="phoneLogin"
+          disabled="{{!canLogin}}"
+          class="login-btn"
+        >
+          登录
+        </t-button>
+      </view>
+      
+      <t-button 
+        wx:else
+        theme="default" 
+        size="large" 
+        bind:tap="showPhoneLogin"
+        class="method-btn"
+      >
+        手机号登录
+      </t-button>
+    </view>
+  </view>
+
+  <!-- 用户协议 -->
+  <view class="agreement-section">
+    <view class="agreement-text">
+      登录即表示同意
+      <text class="agreement-link" bind:tap="viewUserAgreement">《用户协议》</text>
+      和
+      <text class="agreement-link" bind:tap="viewPrivacyPolicy">《隐私政策》</text>
+    </view>
+  </view>
+</view>
+
+<!-- Toast 组件 -->
+<t-toast id="t-toast" />
+
+<!-- Dialog 组件 -->
+<t-dialog id="t-dialog" /> 

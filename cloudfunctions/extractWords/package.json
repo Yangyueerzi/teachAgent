@@ -1,0 +1,21 @@
+{
+  "name": "extractWords",
+  "version": "1.0.0",
+  "description": "提取图片中的英文单词",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3",
+    "axios": "^1.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ocr",
+    "words",
+    "extraction",
+    "qwen"
+  ],
+  "author": "",
+  "license": "MIT"
+} 

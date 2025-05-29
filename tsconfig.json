@@ -19,15 +19,15 @@
     "lib": ["ES2020"],
     "typeRoots": [
       "./typings"
-    ]
+    ],
+    "paths": {
+      "tdesign-miniprogram/*":["./miniprogram/miniprogram_npm/tdesign-miniprogram/*"]
+    }
   },
   "include": [
     "./**/*.ts"
   ],
   "exclude": [
     "node_modules"
-  ],
-  "paths": {
-      "tdesign-miniprogram/*":["./miniprogram/miniprogram_npm/tdesign-miniprogram/*"]
-  }
+  ]
 }

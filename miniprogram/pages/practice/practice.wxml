@@ -1,0 +1,82 @@
+<view class="practice-container">
+  <!-- 进度区域 -->
+  <view class="progress-section">
+    <view class="progress-info">
+      <text>第 {{currentIndex + 1}} / {{words.length}} 个单词</text>
+      <text>正确率: {{accuracy}}%</text>
+    </view>
+    <t-progress 
+      percentage="{{progressPercentage}}" 
+      theme="primary"
+      stroke-width="8rpx"
+    />
+  </view>
+
+  <!-- 单词播放区域 -->
+  <view class="word-section">
+    <view class="word-card">
+      <view class="play-button {{isPlaying ? 'playing' : ''}}" bind:tap="playWord">
+        <t-icon name="{{isPlaying ? 'pause' : 'play'}}" size="64rpx" color="#ffffff" />
+      </view>
+      <view class="word-title">点击播放单词</view>
+      <view class="word-desc">听清楚后，点击下方字母键拼写</view>
+      <view class="word-tip">💡 提示：可以重复播放多次</view>
+    </view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-section">
+    <view class="input-display">
+      <text wx:if="{{currentInput}}">{{currentInput}}</text>
+      <text wx:else class="placeholder">开始拼写...</text>
+    </view>
+    
+    <!-- 字母键盘 -->
+    <view class="keyboard">
+      <view 
+        class="key {{pressedKey === item ? 'pressed' : ''}}" 
+        wx:for="{{keyboardLayout}}" 
+        wx:key="index"
+        data-letter="{{item}}"
+        bind:touchstart="onKeyPress"
+        bind:touchend="onKeyRelease"
+      >
+        {{item}}
+      </view>
+    </view>
+
+    <!-- 控制按钮 -->
+    <view class="control-buttons">
+      <t-button 
+        theme="default" 
+        size="large" 
+        bind:tap="clearInput"
+        class="control-btn"
+      >
+        清除
+      </t-button>
+      <t-button 
+        theme="primary" 
+        size="large" 
+        bind:tap="submitWord"
+        class="control-btn"
+        disabled="{{!currentInput}}"
+      >
+        提交
+      </t-button>
+    </view>
+  </view>
+</view>
+
+<!-- 反馈弹窗 -->
+<view class="feedback-overlay {{showFeedback ? 'show' : ''}}" wx:if="{{showFeedback}}">
+  <view class="feedback-content {{feedbackType}}">
+    <view class="feedback-icon">
+      {{feedbackType === 'correct' ? '✅' : '❌'}}
+    </view>
+    <view class="feedback-text">{{feedbackMessage}}</view>
+  </view>
+</view>
+
+<!-- Toast 组件 -->
+<t-toast id="t-toast" /> 

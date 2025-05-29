@@ -1,0 +1,35 @@
+{
+  "name": "teach-agent-miniprogram",
+  "version": "1.0.0",
+  "description": "家长辅导助手微信小程序",
+  "main": "app.js",
+  "scripts": {
+    "dev": "echo '请使用微信开发者工具打开项目进行开发'",
+    "build": "echo '请使用微信开发者工具进行构建'"
+  },
+  "keywords": [
+    "miniprogram",
+    "wechat",
+    "education",
+    "dictation",
+    "tdesign"
+  ],
+  "author": "TeachAgent Team",
+  "license": "MIT",
+  "dependencies": {
+    "tdesign-miniprogram": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/wechat-miniprogram": "^3.4.0",
+    "miniprogram-api-typings": "^4.0.7",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/teach-agent-miniprogram.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/teach-agent-miniprogram/issues"
+  },
+  "homepage": "https://github.com/your-org/teach-agent-miniprogram#readme"
+}

@@ -16,54 +16,51 @@
   <view class="word-section">
     <view class="word-card">
       <view class="play-button {{isPlaying ? 'playing' : ''}}" bind:tap="playWord">
-        <t-icon name="{{isPlaying ? 'pause' : 'play'}}" size="64rpx" color="#ffffff" />
+        <text class="play-icon">{{isPlaying ? '⏸️' : '▶️'}}</text>
       </view>
       <view class="word-title">点击播放单词</view>
-      <view class="word-desc">听清楚后，点击下方字母键拼写</view>
+      <view class="word-desc">听清楚后，在下方输入框拼写</view>
       <view class="word-tip">💡 提示：可以重复播放多次</view>
     </view>
   </view>
 
   <!-- 输入区域 -->
   <view class="input-section">
-    <view class="input-display">
-      <text wx:if="{{currentInput}}">{{currentInput}}</text>
-      <text wx:else class="placeholder">开始拼写...</text>
-    </view>
-    
-    <!-- 字母键盘 -->
-    <view class="keyboard">
-      <view 
-        class="key {{pressedKey === item ? 'pressed' : ''}}" 
-        wx:for="{{keyboardLayout}}" 
-        wx:key="index"
-        data-letter="{{item}}"
-        bind:touchstart="onKeyPress"
-        bind:touchend="onKeyRelease"
-      >
-        {{item}}
+    <view class="input-card">
+      <view class="input-label">请输入听到的单词：</view>
+      
+      <!-- 输入显示区域 -->
+      <view class="input-display">
+        <text class="input-text">{{currentInput || '开始拼写...'}}</text>
+        <view class="cursor {{inputFocus ? 'blink' : ''}}"></view>
       </view>
-    </view>
-
-    <!-- 控制按钮 -->
-    <view class="control-buttons">
-      <t-button 
-        theme="default" 
-        size="large" 
-        bind:tap="clearInput"
-        class="control-btn"
-      >
-        清除
-      </t-button>
-      <t-button 
-        theme="primary" 
-        size="large" 
-        bind:tap="submitWord"
-        class="control-btn"
-        disabled="{{!currentInput}}"
-      >
-        提交
-      </t-button>
+      
+      <!-- 固定键盘 -->
+      <view class="keyboard">
+        <!-- 第一行 -->
+        <view class="keyboard-row">
+          <view class="key" wx:for="{{keyboardRow1}}" wx:key="index" data-key="{{item}}" bind:tap="onKeyPress">{{item}}</view>
+        </view>
+        
+        <!-- 第二行 -->
+        <view class="keyboard-row">
+          <view class="key" wx:for="{{keyboardRow2}}" wx:key="index" data-key="{{item}}" bind:tap="onKeyPress">{{item}}</view>
+        </view>
+        
+        <!-- 第三行 -->
+        <view class="keyboard-row">
+          <view class="key" wx:for="{{keyboardRow3}}" wx:key="index" data-key="{{item}}" bind:tap="onKeyPress">{{item}}</view>
+          <view class="key key-delete" data-key="delete" bind:tap="onKeyPress">⌫</view>
+        </view>
+        
+        <!-- 第四行 -->
+        <view class="keyboard-row">
+          <view class="key key-space" data-key="space" bind:tap="onKeyPress">空格</view>
+          <view class="key key-submit" data-key="submit" bind:tap="submitWord">提交</view>
+        </view>
+      </view>
+      
+      <view class="input-hint">点击字母键拼写单词，完成后点击"提交"</view>
     </view>
   </view>
 </view>

@@ -1,7 +1,7 @@
 {
-  "name": "extractWords",
+  "name": "teachAgentApi",
   "version": "1.0.0",
-  "description": "提取图片中的英文单词",
+  "description": "教学助手统一API云函数",
   "main": "index.js",
   "dependencies": {
     "wx-server-sdk": "~2.6.3",
@@ -11,10 +11,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
+    "api",
+    "wechat",
     "ocr",
     "words",
-    "extraction",
-    "qwen"
+    "education"
   ],
   "author": "",
   "license": "MIT"

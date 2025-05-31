@@ -1,5 +1,4 @@
 import Toast from 'tdesign-miniprogram/toast/index';
-import Dialog from 'tdesign-miniprogram/dialog/index';
 
 // 定义接口类型
 interface UploadResult {
@@ -24,7 +23,9 @@ Page({
     isProcessing: false,
     recognizedWords: [] as string[],
     uploadProgress: 0,
-    processingStep: '' // 当前处理步骤
+    processingStep: '', // 当前处理步骤
+    isEditMode: false, // 是否处于编辑模式
+    newWord: '' // 新添加的单词
   },
 
   onLoad() {
@@ -255,21 +256,18 @@ Page({
 
   // 选择上传方式
   chooseUploadMethod() {
-    Dialog.confirm({
-      context: this,
-      selector: '#t-dialog',
+    wx.showModal({
       title: '选择上传方式',
       content: '请选择获取图片的方式',
-      confirmBtn: '拍照',
-      cancelBtn: '相册',
-    }).then((result: any) => {
-      if (result.confirm) {
-        this.takePhoto();
-      } else if (result.cancel) {
-        this.chooseFromAlbum();
+      confirmText: '拍照',
+      cancelText: '相册',
+      success: (result) => {
+        if (result.confirm) {
+          this.takePhoto();
+        } else if (result.cancel) {
+          this.chooseFromAlbum();
+        }
       }
-    }).catch(() => {
-      // 用户取消操作
     });
   },
 
@@ -282,5 +280,86 @@ Page({
       theme: theme,
       direction: 'column',
     });
-  }
+  },
+
+  // 切换编辑模式
+  toggleEditMode() {
+    this.setData({
+      isEditMode: !this.data.isEditMode
+    });
+  },
+
+  // 更新单词
+  updateWord(e: any) {
+    const index = e.currentTarget.dataset.index;
+    const newValue = e.detail.value.trim();
+    
+    if (!newValue) {
+      this.showToast('单词不能为空', 'warning');
+      return;
+    }
+    
+    const words = [...this.data.recognizedWords];
+    words[index] = newValue;
+    
+    this.setData({
+      recognizedWords: words
+    });
+    
+    this.showToast('单词已更新', 'success');
+  },
+
+  // 删除单词
+  deleteWord(e: any) {
+    const index = e.currentTarget.dataset.index;
+    
+    wx.showModal({
+      title: '确认删除',
+      content: `确定要删除单词"${this.data.recognizedWords[index]}"吗？`,
+      success: (result) => {
+        if (result.confirm) {
+          const words = [...this.data.recognizedWords];
+          words.splice(index, 1);
+          
+          this.setData({
+            recognizedWords: words
+          });
+          
+          this.showToast('单词已删除', 'success');
+        }
+      }
+    });
+  },
+
+  // 新单词输入
+  onNewWordInput(e: any) {
+    this.setData({
+      newWord: e.detail.value
+    });
+  },
+
+  // 添加新单词
+  addNewWord() {
+    const newWord = this.data.newWord.trim();
+    
+    if (!newWord) {
+      this.showToast('请输入单词', 'warning');
+      return;
+    }
+    
+    // 检查是否已存在
+    if (this.data.recognizedWords.includes(newWord)) {
+      this.showToast('单词已存在', 'warning');
+      return;
+    }
+    
+    const words = [...this.data.recognizedWords, newWord];
+    
+    this.setData({
+      recognizedWords: words,
+      newWord: ''
+    });
+    
+    this.showToast('单词已添加', 'success');
+  },
 }); 

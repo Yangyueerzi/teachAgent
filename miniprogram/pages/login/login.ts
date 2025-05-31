@@ -1,5 +1,5 @@
 import Toast from 'tdesign-miniprogram/toast/index';
-import Dialog from 'tdesign-miniprogram/dialog/index';
+import { API } from '../../utils/api';
 
 Page({
   data: {
@@ -8,7 +8,8 @@ Page({
     verifyCode: '',
     codeCountdown: 0,
     canSendCode: false,
-    canLogin: false
+    canLogin: false,
+    isLogging: false
   },
 
   onLoad() {
@@ -16,37 +17,73 @@ Page({
   },
 
   // 微信登录
-  wechatLogin() {
-    wx.getUserProfile({
-      desc: '用于完善用户资料',
-      success: (res) => {
-        console.log('获取用户信息成功:', res);
-        
-        // 模拟登录成功
+  async wechatLogin() {
+    if (this.data.isLogging) {
+      return;
+    }
+
+    this.setData({
+      isLogging: true
+    });
+
+    try {
+      // 先获取用户信息授权
+      const userInfoResult = await API.getUserProfile();
+      if (!userInfoResult.success) {
+        this.showToast('需要授权用户信息才能登录', 'warning');
+        this.setData({ isLogging: false });
+        return;
+      }
+
+      const userProfile = userInfoResult.data;
+
+      // 进行微信登录
+      const loginResult = await API.wechatLogin();
+      
+      if (loginResult.success) {
+        // 合并用户信息
         const userInfo = {
-          nickName: res.userInfo.nickName,
-          avatarUrl: res.userInfo.avatarUrl,
-          gender: res.userInfo.gender,
-          grade: '小学三年级',
+          ...loginResult.data.userInfo,
+          nickName: userProfile.nickName,
+          avatarUrl: userProfile.avatarUrl,
+          gender: userProfile.gender,
+          grade: loginResult.data.userInfo.grade || '小学三年级',
+          openid: loginResult.data.openid,
+          sessionInfo: loginResult.data.sessionInfo,
           loginTime: new Date().toISOString()
         };
-        
-        // 保存用户信息
+
+        // 保存用户信息到本地存储
         wx.setStorageSync('userInfo', userInfo);
-        
+        wx.setStorageSync('sessionInfo', loginResult.data.sessionInfo);
+
+        // 更新云端用户信息
+        await API.updateUserInfo(loginResult.data.openid, {
+          nickName: userProfile.nickName,
+          avatarUrl: userProfile.avatarUrl,
+          gender: userProfile.gender
+        });
+
         this.showToast('登录成功！', 'success');
-        
-        // 延迟跳转
+
+        // 延迟跳转到首页
         setTimeout(() => {
           wx.switchTab({
             url: '/pages/home/home'
           });
         }, 1500);
-      },
-      fail: (err) => {
-        console.error('获取用户信息失败:', err);
-        this.showToast('登录失败，请重试', 'error');
+
+      } else {
+        this.showToast(loginResult.message || '登录失败，请重试', 'error');
       }
+
+    } catch (error: any) {
+      console.error('微信登录出错:', error);
+      this.showToast('登录失败，请检查网络连接', 'error');
+    }
+
+    this.setData({
+      isLogging: false
     });
   },
 
@@ -161,30 +198,26 @@ Page({
 
   // 查看用户协议
   viewUserAgreement() {
-    Dialog({
-      context: this,
-      selector: '#t-dialog',
+    wx.showModal({
       title: '用户协议',
       content: '这里是用户协议的内容...',
-      confirmBtn: '我知道了',
-      showCancelBtn: false
+      showCancel: false,
+      confirmText: '我知道了'
     });
   },
 
   // 查看隐私政策
   viewPrivacyPolicy() {
-    Dialog({
-      context: this,
-      selector: '#t-dialog',
+    wx.showModal({
       title: '隐私政策',
       content: '这里是隐私政策的内容...',
-      confirmBtn: '我知道了',
-      showCancelBtn: false
+      showCancel: false,
+      confirmText: '我知道了'
     });
   },
 
   // 显示Toast消息
-  showToast(message: string, theme: string = 'success') {
+  showToast(message: string, theme: 'success' | 'warning' | 'error' | 'loading' = 'success') {
     Toast({
       context: this,
       selector: '#t-toast',

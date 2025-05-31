@@ -1,5 +1,4 @@
 import Toast from 'tdesign-miniprogram/toast/index';
-import Dialog from 'tdesign-miniprogram/dialog/index';
 
 interface StudyRecord {
   date: string;
@@ -24,7 +23,27 @@ Page({
       masteredWords: 0
     },
     studyRecords: [] as any[],
-    wrongWordsList: [] as WrongWord[]
+    wrongWordsList: [] as WrongWord[],
+    showEditModal: false,
+    editUserInfo: {
+      nickName: '',
+      avatarUrl: '',
+      grade: ''
+    },
+    gradeOptions: [
+      { label: '小学一年级', value: '小学一年级' },
+      { label: '小学二年级', value: '小学二年级' },
+      { label: '小学三年级', value: '小学三年级' },
+      { label: '小学四年级', value: '小学四年级' },
+      { label: '小学五年级', value: '小学五年级' },
+      { label: '小学六年级', value: '小学六年级' },
+      { label: '初中一年级', value: '初中一年级' },
+      { label: '初中二年级', value: '初中二年级' },
+      { label: '初中三年级', value: '初中三年级' },
+      { label: '高中一年级', value: '高中一年级' },
+      { label: '高中二年级', value: '高中二年级' },
+      { label: '高中三年级', value: '高中三年级' }
+    ]
   },
 
   onLoad() {
@@ -113,7 +132,7 @@ Page({
     const wrongWords: WrongWord[] = Array.from(wordErrorMap.entries()).map(([word, errorCount]) => ({
       word,
       errorCount,
-      status: errorCount <= 2 ? 'mastered' : 'review'
+      status: (errorCount <= 2 ? 'mastered' : 'review') as 'mastered' | 'review'
     })).sort((a, b) => b.errorCount - a.errorCount);
 
     return wrongWords.slice(0, 10); // 只显示前10个
@@ -163,13 +182,11 @@ Page({
 
   // 退出登录
   logout() {
-    Dialog({
-      context: this,
-      selector: '#t-dialog',
+    wx.showModal({
       title: '确认退出',
       content: '确定要退出登录吗？',
-      confirmBtn: '确定',
-      cancelBtn: '取消',
+      confirmText: '确定',
+      cancelText: '取消',
       success: (result) => {
         if (result.confirm) {
           // 清除用户信息
@@ -186,7 +203,7 @@ Page({
   },
 
   // 显示Toast消息
-  showToast(message: string, theme: string = 'success') {
+  showToast(message: string, theme: 'success' | 'warning' | 'error' = 'success') {
     Toast({
       context: this,
       selector: '#t-toast',
@@ -194,5 +211,153 @@ Page({
       theme: theme,
       direction: 'column',
     });
-  }
+  },
+
+  // 打开编辑个人信息
+  editProfile() {
+    const userInfo = this.data.userInfo;
+    if (!userInfo) {
+      this.showToast('请先登录', 'warning');
+      return;
+    }
+    
+    this.setData({
+      editUserInfo: {
+        nickName: userInfo.nickName || '',
+        avatarUrl: userInfo.avatarUrl || '',
+        grade: userInfo.grade || '小学三年级'
+      },
+      showEditModal: true
+    });
+  },
+
+  // 关闭编辑弹窗
+  closeEditModal() {
+    this.setData({
+      showEditModal: false
+    });
+  },
+
+  // 编辑弹窗显示状态变化
+  onEditModalChange(e: any) {
+    this.setData({
+      showEditModal: e.detail.visible
+    });
+  },
+
+  // 选择头像
+  chooseAvatar() {
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        const tempFilePath = res.tempFiles[0].tempFilePath;
+        
+        // 上传头像到云存储
+        this.uploadAvatar(tempFilePath);
+      },
+      fail: (err) => {
+        console.error('选择头像失败:', err);
+        this.showToast('选择头像失败', 'error');
+      }
+    });
+  },
+
+  // 上传头像
+  async uploadAvatar(filePath: string) {
+    wx.showLoading({
+      title: '上传中...'
+    });
+
+    try {
+      const cloudPath = `avatars/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`;
+      const uploadResult = await wx.cloud.uploadFile({
+        cloudPath: cloudPath,
+        filePath: filePath
+      });
+
+      if (uploadResult.fileID) {
+        // 获取临时链接用于显示
+        const tempUrlResult = await wx.cloud.getTempFileURL({
+          fileList: [uploadResult.fileID]
+        });
+
+        if (tempUrlResult.fileList && tempUrlResult.fileList.length > 0) {
+          const tempUrl = tempUrlResult.fileList[0].tempFileURL;
+          
+          this.setData({
+            'editUserInfo.avatarUrl': tempUrl
+          });
+
+          this.showToast('头像上传成功', 'success');
+        }
+      }
+    } catch (error) {
+      console.error('头像上传失败:', error);
+      this.showToast('头像上传失败', 'error');
+    }
+
+    wx.hideLoading();
+  },
+
+  // 昵称输入变化
+  onNickNameChange(e: any) {
+    this.setData({
+      'editUserInfo.nickName': e.detail.value
+    });
+  },
+
+  // 学年选择变化
+  onGradeChange(e: any) {
+    this.setData({
+      'editUserInfo.grade': e.detail.value
+    });
+  },
+
+  // 保存用户信息
+  async saveUserInfo() {
+    const editInfo = this.data.editUserInfo;
+    
+    if (!editInfo.nickName.trim()) {
+      this.showToast('请输入昵称', 'warning');
+      return;
+    }
+
+    wx.showLoading({
+      title: '保存中...'
+    });
+
+    try {
+      // 更新本地用户信息
+      const userInfo = { ...this.data.userInfo };
+      userInfo.nickName = editInfo.nickName.trim();
+      userInfo.avatarUrl = editInfo.avatarUrl;
+      userInfo.grade = editInfo.grade;
+
+      // 保存到本地存储
+      wx.setStorageSync('userInfo', userInfo);
+
+      // 更新页面数据
+      this.setData({
+        userInfo: userInfo,
+        showEditModal: false
+      });
+
+      this.showToast('保存成功', 'success');
+
+      // TODO: 如果有云端API，这里可以同步到云端
+      // await API.updateUserInfo(userInfo.openid, {
+      //   nickName: editInfo.nickName,
+      //   avatarUrl: editInfo.avatarUrl,
+      //   grade: editInfo.grade
+      // });
+
+    } catch (error) {
+      console.error('保存用户信息失败:', error);
+      this.showToast('保存失败', 'error');
+    }
+
+    wx.hideLoading();
+  },
 }); 

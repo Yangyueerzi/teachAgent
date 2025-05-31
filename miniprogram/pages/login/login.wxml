@@ -11,7 +11,7 @@
     <!-- 微信登录 -->
     <view class="login-card">
       <view class="method-icon">
-        <t-icon name="logo-wechat" size="48rpx" color="#07c160" />
+        <text class="wechat-icon">💬</text>
       </view>
       <view class="method-content">
         <view class="method-title">微信一键登录</view>
@@ -30,7 +30,7 @@
     <!-- 手机号登录 -->
     <view class="login-card">
       <view class="method-icon">
-        <t-icon name="mobile" size="48rpx" color="#0052d9" />
+        <text class="phone-icon">📱</text>
       </view>
       <view class="method-content">
         <view class="method-title">手机号登录</view>
@@ -103,7 +103,4 @@
 </view>
 
 <!-- Toast 组件 -->
-<t-toast id="t-toast" />
-
-<!-- Dialog 组件 -->
-<t-dialog id="t-dialog" /> 
+<t-toast id="t-toast" /> 

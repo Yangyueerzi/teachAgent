@@ -1,32 +1,97 @@
 .login-container {
   padding: 80rpx 40rpx 40rpx;
-  background: linear-gradient(135deg, #f8faff 0%, #e5f3ff 100%);
+  background: linear-gradient(135deg, #f8faff 0%, #e5f3ff 50%, #f0f8ff 100%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 背景装饰 */
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 30% 20%, rgba(0, 82, 217, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(0, 133, 255, 0.08) 0%, transparent 50%);
+  animation: backgroundFloat 12s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes backgroundFloat {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(3deg); }
 }
 
 /* Logo区域 */
 .logo-section {
   text-align: center;
   margin-bottom: 80rpx;
+  position: relative;
+  z-index: 1;
+  animation: logoSlideIn 1s ease-out;
+}
+
+@keyframes logoSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .logo-icon {
   font-size: 120rpx;
   margin-bottom: 32rpx;
+  animation: logoPulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 4rpx 16rpx rgba(0, 82, 217, 0.2));
+}
+
+@keyframes logoPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 .logo-title {
   font-size: 48rpx;
   font-weight: 700;
-  color: #333333;
+  background: linear-gradient(135deg, #0052d9, #0085ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: 16rpx;
+  animation: titleShine 3s ease-in-out infinite;
+}
+
+@keyframes titleShine {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.2); }
 }
 
 .logo-desc {
   font-size: 28rpx;
   color: #666666;
+  line-height: 1.5;
+  animation: descFadeIn 0.8s ease-out 0.3s both;
+}
+
+@keyframes descFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 登录方式 */
@@ -35,25 +100,134 @@
   display: flex;
   flex-direction: column;
   gap: 32rpx;
+  position: relative;
+  z-index: 1;
 }
 
 .login-card {
-  background: #ffffff;
-  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20rpx);
+  border-radius: 32rpx;
   padding: 48rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-  border: 1rpx solid #f0f0f0;
+  box-shadow: 0 16rpx 64rpx rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  animation: cardSlideIn 0.8s ease-out both;
+}
+
+.login-card:nth-child(1) { animation-delay: 0.2s; }
+.login-card:nth-child(2) { animation-delay: 0.4s; }
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(50rpx) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 82, 217, 0.1), transparent);
+  transition: left 0.8s ease;
+}
+
+.login-card:active::before {
+  left: 100%;
+}
+
+.login-card:active {
+  transform: translateY(-8rpx) scale(1.02);
+  box-shadow: 0 24rpx 80rpx rgba(0, 82, 217, 0.15);
+  border-color: rgba(0, 82, 217, 0.2);
 }
 
 .method-icon {
-  width: 96rpx;
-  height: 96rpx;
-  background: #f8faff;
-  border-radius: 24rpx;
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 32rpx;
+  position: relative;
+  overflow: hidden;
+  animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.method-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.6s ease;
+}
+
+.login-card:active .method-icon::after {
+  width: 224rpx;
+  height: 224rpx;
+}
+
+.wechat-icon,
+.phone-icon {
+  font-size: 56rpx;
+  filter: drop-shadow(0 2rpx 8rpx rgba(0, 0, 0, 0.1));
+}
+
+.wechat-icon {
+  color: white;
+}
+
+.phone-icon {
+  color: white;
+}
+
+.method-icon.wechat {
+  background: linear-gradient(135deg, #07c160, #26d160);
+  animation: wechatPulse 2s ease-in-out infinite;
+}
+
+@keyframes wechatPulse {
+  0%, 100% { 
+    box-shadow: 0 8rpx 32rpx rgba(7, 193, 96, 0.3);
+  }
+  50% { 
+    box-shadow: 0 12rpx 48rpx rgba(7, 193, 96, 0.5);
+  }
+}
+
+.method-icon.phone {
+  background: linear-gradient(135deg, #0052d9, #0085ff);
+  animation: phonePulse 2s ease-in-out infinite 1s;
+}
+
+@keyframes phonePulse {
+  0%, 100% { 
+    box-shadow: 0 8rpx 32rpx rgba(0, 82, 217, 0.3);
+  }
+  50% { 
+    box-shadow: 0 12rpx 48rpx rgba(0, 82, 217, 0.5);
+  }
 }
 
 .method-content {
@@ -62,7 +236,7 @@
 
 .method-title {
   font-size: 36rpx;
-  font-weight: 600;
+  font-weight: 700;
   color: #333333;
   margin-bottom: 16rpx;
 }
@@ -70,19 +244,61 @@
 .method-desc {
   font-size: 28rpx;
   color: #666666;
+  line-height: 1.5;
 }
 
 .method-btn {
   margin-top: 16rpx;
+  border-radius: 24rpx !important;
+  font-weight: 600 !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.method-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.6s ease;
+}
+
+.method-btn:active::before {
+  width: 600rpx;
+  height: 600rpx;
 }
 
 /* 手机号输入区域 */
 .phone-input-section {
   margin-top: 32rpx;
+  animation: inputSlideIn 0.6s ease-out 0.3s both;
+}
+
+@keyframes inputSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .phone-input {
   margin-bottom: 24rpx;
+  border-radius: 20rpx !important;
+  transition: all 0.3s ease;
+}
+
+.phone-input:focus-within {
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 24rpx rgba(0, 82, 217, 0.15);
 }
 
 .code-input-row {
@@ -93,30 +309,101 @@
 
 .code-input {
   flex: 1;
+  border-radius: 20rpx !important;
+  transition: all 0.3s ease;
+}
+
+.code-input:focus-within {
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 24rpx rgba(0, 82, 217, 0.15);
 }
 
 .send-code-btn {
   flex-shrink: 0;
   width: 200rpx;
+  border-radius: 20rpx !important;
+  font-weight: 600 !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.send-code-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.6s ease;
+}
+
+.send-code-btn:active::before {
+  width: 400rpx;
+  height: 400rpx;
 }
 
 .login-btn {
   margin-top: 16rpx;
+  border-radius: 24rpx !important;
+  font-weight: 600 !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.6s ease;
+}
+
+.login-btn:active::before {
+  width: 600rpx;
+  height: 600rpx;
 }
 
 /* 用户协议 */
 .agreement-section {
   margin-top: 60rpx;
   text-align: center;
+  position: relative;
+  z-index: 1;
+  animation: agreementFadeIn 0.8s ease-out 0.8s both;
+}
+
+@keyframes agreementFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .agreement-text {
   font-size: 24rpx;
   color: #999999;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .agreement-link {
   color: #0052d9;
   text-decoration: underline;
+  transition: all 0.3s ease;
+}
+
+.agreement-link:active {
+  color: #0085ff;
+  text-shadow: 0 2rpx 8rpx rgba(0, 82, 217, 0.3);
 } 

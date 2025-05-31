@@ -8,354 +8,914 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 30%, #bae6fd 60%, #7dd3fc 100%);
             margin: 0;
             padding: 0;
             height: 100vh;
+            position: relative;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-        .login-container {
-            background: #fff;
-            border-radius: 20px;
-            padding: 40px 30px;
-            width: 320px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            text-align: center;
+        
+        /* 动态背景 */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, #0052d9, #0085ff, #00a870, #00d084);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            z-index: -2;
         }
-        .logo {
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* 浮动装饰 */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 15s linear infinite;
+        }
+        
+        .circle1 {
+            width: 60px;
+            height: 60px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .circle2 {
+            width: 40px;
+            height: 40px;
+            top: 60%;
+            right: 20%;
+            animation-delay: 5s;
+        }
+        
+        .circle3 {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #0052d9, #0085ff);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            font-size: 32px;
-            color: white;
+            bottom: 30%;
+            left: 30%;
+            animation-delay: 10s;
         }
-        .title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #374151;
-            margin-bottom: 8px;
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
-        .subtitle {
-            font-size: 14px;
-            color: #9ca3af;
-            margin-bottom: 32px;
-        }
-        .login-methods {
+        
+        .container {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
         }
-        .login-btn {
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px 32px;
+            width: 100%;
+            max-width: 360px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            animation: cardSlideUp 1s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes cardSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 82, 217, 0.05), transparent);
+            transition: left 1s ease;
+        }
+        
+        .login-card:hover::before {
+            left: 100%;
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: logoFadeIn 1.2s ease-out 0.3s both;
+        }
+        
+        @keyframes logoFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #0052d9, #0085ff);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            padding: 14px 20px;
+            margin: 0 auto 20px;
+            font-size: 36px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes logoPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(0, 82, 217, 0.3);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 15px 40px rgba(0, 82, 217, 0.5);
+            }
+        }
+        
+        .app-logo::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: logoShine 4s ease infinite;
+        }
+        
+        @keyframes logoShine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .app-title {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0052d9, #0085ff, #00a870);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+        
+        .app-subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .form-section {
+            animation: formSlideIn 1.5s ease-out 0.6s both;
+        }
+        
+        @keyframes formSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #0052d9;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 4px rgba(0, 82, 217, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .form-input.error {
+            border-color: #ef4444;
+            animation: inputShake 0.5s ease;
+        }
+        
+        @keyframes inputShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            animation: errorSlideIn 0.3s ease;
+        }
+        
+        @keyframes errorSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9ca3af;
+            transition: color 0.3s ease;
+        }
+        
+        .password-toggle:hover {
+            color: #0052d9;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #0052d9, #0085ff);
+            color: white;
+            border: none;
             border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
-            border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 82, 217, 0.3);
+            margin-bottom: 24px;
         }
-        .wechat-btn {
-            background: #07c160;
-            color: white;
+        
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.6s ease;
         }
-        .wechat-btn:hover {
-            background: #06ad56;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(7,193,96,0.3);
+        
+        .login-btn:active::before {
+            width: 300px;
+            height: 300px;
         }
-        .phone-btn {
-            background: #f8faff;
-            color: #0052d9;
-            border: 1px solid #e5e7eb;
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 82, 217, 0.4);
         }
-        .phone-btn:hover {
-            background: #f0f7ff;
-            border-color: #0052d9;
+        
+        .login-btn:disabled {
+            background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
+        
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         .divider {
             display: flex;
             align-items: center;
-            margin: 24px 0;
-            color: #9ca3af;
-            font-size: 14px;
+            margin: 32px 0;
+            animation: dividerFadeIn 1.8s ease-out 0.9s both;
         }
+        
+        @keyframes dividerFadeIn {
+            from {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+            to {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+        
         .divider::before,
         .divider::after {
             content: '';
             flex: 1;
             height: 1px;
-            background: #e5e7eb;
+            background: linear-gradient(90deg, transparent, #d1d5db, transparent);
         }
-        .divider span {
+        
+        .divider-text {
             padding: 0 16px;
-        }
-        .phone-form {
-            display: none;
-            text-align: left;
-            margin-top: 20px;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 8px;
-        }
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: #0052d9;
-            box-shadow: 0 0 0 3px rgba(0,82,217,0.1);
-        }
-        .code-input-group {
-            display: flex;
-            gap: 8px;
-        }
-        .code-input {
-            flex: 1;
-        }
-        .send-code-btn {
-            padding: 12px 16px;
-            background: #0052d9;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: background 0.3s ease;
-        }
-        .send-code-btn:hover {
-            background: #0041a8;
-        }
-        .send-code-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-        .submit-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #0052d9, #0085ff);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 8px;
-        }
-        .submit-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,82,217,0.3);
-        }
-        .back-btn {
-            background: none;
-            border: none;
-            color: #0052d9;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 16px;
-            text-decoration: underline;
-        }
-        .terms {
-            font-size: 12px;
             color: #9ca3af;
-            margin-top: 24px;
-            line-height: 1.5;
-        }
-        .terms a {
-            color: #0052d9;
-            text-decoration: none;
-        }
-        .success-message {
-            display: none;
-            background: #dcfce7;
-            border: 1px solid #bbf7d0;
-            color: #166534;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
             font-size: 14px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+        }
+        
+        .social-login {
+            animation: socialSlideIn 2s ease-out 1.2s both;
+        }
+        
+        @keyframes socialSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .social-btn {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .social-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 82, 217, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .social-btn:hover::before {
+            left: 100%;
+        }
+        
+        .social-btn:hover {
+            transform: translateY(-2px);
+            border-color: #0052d9;
+            box-shadow: 0 8px 25px rgba(0, 82, 217, 0.1);
+        }
+        
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            font-size: 20px;
+        }
+        
+        .wechat { color: #07c160; }
+        .alipay { color: #1677ff; }
+        
+        .footer-links {
+            text-align: center;
+            margin-top: 32px;
+            animation: footerFadeIn 2.3s ease-out 1.5s both;
+        }
+        
+        @keyframes footerFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .footer-link {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            margin: 0 12px;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .footer-link:hover {
+            color: #0052d9;
+        }
+        
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #0052d9, #0085ff);
+            transition: width 0.3s ease;
+        }
+        
+        .footer-link:hover::after {
+            width: 100%;
+        }
+        
+        /* 成功动画 */
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 168, 112, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .success-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .success-content {
+            text-align: center;
+            color: white;
+            animation: successPop 0.6s ease-out;
+        }
+        
+        @keyframes successPop {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            80% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 32px 24px;
+                margin: 20px;
+            }
+            
+            .app-logo {
+                width: 70px;
+                height: 70px;
+                font-size: 32px;
+            }
+            
+            .app-title {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <!-- Logo和标题 -->
-        <div class="logo">📚</div>
-        <h1 class="title">欢迎使用</h1>
-        <p class="subtitle">家长辅导助手</p>
+    <!-- 动态背景 -->
+    <div class="animated-bg"></div>
+    
+    <!-- 浮动装饰 -->
+    <div class="floating-elements">
+        <div class="floating-circle circle1"></div>
+        <div class="floating-circle circle2"></div>
+        <div class="floating-circle circle3"></div>
+    </div>
 
-        <!-- 成功消息 -->
-        <div class="success-message" id="successMessage">
-            登录成功！正在跳转...
-        </div>
+    <!-- 主容器 -->
+    <div class="container">
+        <div class="login-card">
+            <!-- Logo 区域 -->
+            <div class="logo-section">
+                <div class="app-logo">🎓</div>
+                <h1 class="app-title">家长辅导助手</h1>
+                <p class="app-subtitle">让学习变得更简单有趣</p>
+            </div>
 
-        <!-- 默认登录方式 -->
-        <div id="defaultLogin">
-            <div class="login-methods">
-                <!-- 微信登录 -->
-                <button class="login-btn wechat-btn" onclick="wechatLogin()">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.298c-.115.379.213.665.547.475l1.767-.665a.59.59 0 0 1 .4 0 6.91 6.91 0 0 0 3.152 0c4.8 0 8.691-3.288 8.691-7.342 0-4.054-3.891-7.342-8.691-7.342zm-2.46 9.108a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4zm4.92 0a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4z"/>
-                        <path d="M15.31 11.85c-3.891 0-6.93 2.665-6.93 5.931 0 1.298.547 2.49 1.459 3.288l-.273.912c-.115.379.213.665.547.475l1.767-.665a.59.59 0 0 1 .4 0c.547.115 1.094.17 1.641.17 3.891 0 6.93-2.665 6.93-5.931s-3.039-5.931-6.93-5.931zm-2.46 7.342a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8zm4.92 0a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8z"/>
-                    </svg>
-                    微信一键登录
-                </button>
+            <!-- 登录表单 -->
+            <div class="form-section">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">手机号</label>
+                        <input 
+                            type="tel" 
+                            class="form-input" 
+                            id="phone"
+                            placeholder="请输入手机号"
+                            maxlength="11"
+                        >
+                        <div class="error-message" id="phoneError">请输入正确的手机号</div>
+                    </div>
 
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <div style="position: relative;">
+                            <input 
+                                type="password" 
+                                class="form-input" 
+                                id="password"
+                                placeholder="请输入密码"
+                            >
+                            <div class="password-toggle" onclick="togglePassword()">👁️</div>
+                        </div>
+                        <div class="error-message" id="passwordError">密码不能为空</div>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="loginBtn">
+                        <span class="loading-spinner" id="loadingSpinner"></span>
+                        <span id="btnText">登录</span>
+                    </button>
+                </form>
+
+                <!-- 分割线 -->
                 <div class="divider">
-                    <span>或</span>
+                    <span class="divider-text">或</span>
                 </div>
 
-                <!-- 手机号登录 -->
-                <button class="login-btn phone-btn" onclick="showPhoneLogin()">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
-                    </svg>
-                    手机号验证码登录
-                </button>
+                <!-- 社交登录 -->
+                <div class="social-login">
+                    <button class="social-btn" onclick="wechatLogin()">
+                        <span class="social-icon wechat">💬</span>
+                        <span>微信登录</span>
+                    </button>
+                    
+                    <button class="social-btn" onclick="alipayLogin()">
+                        <span class="social-icon alipay">💳</span>
+                        <span>支付宝登录</span>
+                    </button>
+                </div>
+
+                <!-- 底部链接 -->
+                <div class="footer-links">
+                    <a href="#" class="footer-link" onclick="showRegister()">注册账号</a>
+                    <a href="#" class="footer-link" onclick="showForgotPassword()">忘记密码</a>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- 手机号登录表单 -->
-        <div class="phone-form" id="phoneForm">
-            <form onsubmit="submitPhoneLogin(event)">
-                <div class="form-group">
-                    <label class="form-label">手机号</label>
-                    <input type="tel" class="form-input" placeholder="请输入手机号" maxlength="11" required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">验证码</label>
-                    <div class="code-input-group">
-                        <input type="text" class="form-input code-input" placeholder="请输入验证码" maxlength="6" required>
-                        <button type="button" class="send-code-btn" onclick="sendCode()" id="sendCodeBtn">
-                            发送验证码
-                        </button>
-                    </div>
-                </div>
-
-                <button type="submit" class="submit-btn">登录</button>
-                <button type="button" class="back-btn" onclick="showDefaultLogin()">返回其他登录方式</button>
-            </form>
-        </div>
-
-        <!-- 用户协议 -->
-        <div class="terms">
-            登录即表示同意
-            <a href="#">《用户协议》</a>和<a href="#">《隐私政策》</a>
+    <!-- 成功提示 -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-content">
+            <div class="success-icon">✅</div>
+            <h2 style="font-size: 24px; margin-bottom: 12px;">登录成功！</h2>
+            <p style="font-size: 16px; opacity: 0.9;">欢迎回来，即将进入主页</p>
         </div>
     </div>
 
     <script>
-        let countdown = 0;
-        let countdownTimer = null;
+        let passwordVisible = false;
 
-        function wechatLogin() {
-            // 模拟微信登录
-            console.log('微信登录');
-            showSuccess();
-        }
-
-        function showPhoneLogin() {
-            document.getElementById('defaultLogin').style.display = 'none';
-            document.getElementById('phoneForm').style.display = 'block';
-        }
-
-        function showDefaultLogin() {
-            document.getElementById('phoneForm').style.display = 'none';
-            document.getElementById('defaultLogin').style.display = 'block';
-        }
-
-        function sendCode() {
-            const phoneInput = document.querySelector('input[type="tel"]');
-            const phone = phoneInput.value;
+        // 切换密码显示
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.password-toggle');
             
-            if (!phone || phone.length !== 11) {
-                alert('请输入正确的手机号');
-                return;
-            }
-
-            // 开始倒计时
-            countdown = 60;
-            const sendCodeBtn = document.getElementById('sendCodeBtn');
-            sendCodeBtn.disabled = true;
+            passwordVisible = !passwordVisible;
+            passwordInput.type = passwordVisible ? 'text' : 'password';
+            toggleIcon.textContent = passwordVisible ? '🙈' : '👁️';
             
-            countdownTimer = setInterval(() => {
-                sendCodeBtn.textContent = `${countdown}秒后重发`;
-                countdown--;
-                
-                if (countdown < 0) {
-                    clearInterval(countdownTimer);
-                    sendCodeBtn.disabled = false;
-                    sendCodeBtn.textContent = '发送验证码';
-                }
-            }, 1000);
-
-            // 模拟发送验证码
-            console.log('发送验证码到:', phone);
-        }
-
-        function submitPhoneLogin(event) {
-            event.preventDefault();
-            
-            const phone = document.querySelector('input[type="tel"]').value;
-            const code = document.querySelector('.code-input').value;
-            
-            if (!phone || !code) {
-                alert('请填写完整信息');
-                return;
-            }
-
-            // 模拟登录验证
-            if (code === '123456') {
-                showSuccess();
-            } else {
-                alert('验证码错误，请重试');
-            }
-        }
-
-        function showSuccess() {
-            document.getElementById('successMessage').style.display = 'block';
-            document.getElementById('defaultLogin').style.display = 'none';
-            document.getElementById('phoneForm').style.display = 'none';
-            
-            // 模拟跳转
+            // 添加切换动画
+            toggleIcon.style.transform = 'scale(0.8)';
             setTimeout(() => {
-                alert('登录成功，即将跳转到首页');
+                toggleIcon.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        // 表单验证
+        function validatePhone(phone) {
+            const phoneRegex = /^1[3-9]\d{9}$/;
+            return phoneRegex.test(phone);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 6;
+        }
+
+        // 显示错误
+        function showError(fieldId, errorId, message) {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            
+            field.classList.add('error');
+            error.textContent = message;
+            error.style.display = 'block';
+            
+            // 清除错误状态
+            setTimeout(() => {
+                field.classList.remove('error');
             }, 2000);
         }
 
-        // 清理定时器
-        window.addEventListener('beforeunload', () => {
-            if (countdownTimer) {
-                clearInterval(countdownTimer);
+        // 隐藏错误
+        function hideError(fieldId, errorId) {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            
+            field.classList.remove('error');
+            error.style.display = 'none';
+        }
+
+        // 登录按钮加载状态
+        function setLoading(isLoading) {
+            const btn = document.getElementById('loginBtn');
+            const spinner = document.getElementById('loadingSpinner');
+            const btnText = document.getElementById('btnText');
+            
+            if (isLoading) {
+                btn.disabled = true;
+                spinner.style.display = 'inline-block';
+                btnText.textContent = '登录中...';
+            } else {
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.textContent = '登录';
+            }
+        }
+
+        // 显示成功动画
+        function showSuccess() {
+            const overlay = document.getElementById('successOverlay');
+            overlay.classList.add('show');
+            
+            // 3秒后隐藏
+            setTimeout(() => {
+                overlay.classList.remove('show');
+                // 模拟跳转
+                setTimeout(() => {
+                    alert('登录成功，即将进入主页！');
+                }, 300);
+            }, 2000);
+        }
+
+        // 表单提交
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            let hasError = false;
+            
+            // 验证手机号
+            if (!phone) {
+                showError('phone', 'phoneError', '请输入手机号');
+                hasError = true;
+            } else if (!validatePhone(phone)) {
+                showError('phone', 'phoneError', '请输入正确的手机号');
+                hasError = true;
+            } else {
+                hideError('phone', 'phoneError');
+            }
+            
+            // 验证密码
+            if (!password) {
+                showError('password', 'passwordError', '请输入密码');
+                hasError = true;
+            } else if (!validatePassword(password)) {
+                showError('password', 'passwordError', '密码至少6位');
+                hasError = true;
+            } else {
+                hideError('password', 'passwordError');
+            }
+            
+            if (hasError) return;
+            
+            // 模拟登录
+            setLoading(true);
+            
+            setTimeout(() => {
+                setLoading(false);
+                showSuccess();
+            }, 2000);
+        });
+
+        // 微信登录
+        function wechatLogin() {
+            addSocialRipple(event.currentTarget);
+            setTimeout(() => {
+                alert('微信登录功能开发中...');
+            }, 300);
+        }
+
+        // 支付宝登录
+        function alipayLogin() {
+            addSocialRipple(event.currentTarget);
+            setTimeout(() => {
+                alert('支付宝登录功能开发中...');
+            }, 300);
+        }
+
+        // 注册
+        function showRegister() {
+            alert('注册功能开发中...');
+        }
+
+        // 忘记密码
+        function showForgotPassword() {
+            alert('找回密码功能开发中...');
+        }
+
+        // 社交按钮波纹效果
+        function addSocialRipple(button) {
+            const rect = button.getBoundingClientRect();
+            const ripple = document.createElement('span');
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(0, 82, 217, 0.3)';
+            ripple.style.transform = 'scale(0)';
+            ripple.style.animation = 'ripple 0.6s linear';
+            ripple.style.pointerEvents = 'none';
+            
+            button.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+
+        // 输入框实时验证
+        document.getElementById('phone').addEventListener('input', function(e) {
+            const value = e.target.value.trim();
+            if (value && validatePhone(value)) {
+                hideError('phone', 'phoneError');
             }
         });
+
+        document.getElementById('password').addEventListener('input', function(e) {
+            const value = e.target.value.trim();
+            if (value && validatePassword(value)) {
+                hideError('password', 'passwordError');
+            }
+        });
+
+        // 页面加载完成后创建更多浮动元素
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.floating-elements');
+            
+            // 创建更多装饰元素
+            for (let i = 0; i < 8; i++) {
+                const element = document.createElement('div');
+                element.className = 'floating-circle';
+                element.style.width = Math.random() * 30 + 20 + 'px';
+                element.style.height = element.style.width;
+                element.style.left = Math.random() * 100 + '%';
+                element.style.top = Math.random() * 100 + '%';
+                element.style.animationDelay = Math.random() * 15 + 's';
+                element.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(element);
+            }
+        });
+
+        // 添加CSS动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html> 

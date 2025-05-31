@@ -12,21 +12,18 @@ Page({
     currentIndex: 0,
     currentInput: '',
     isPlaying: false,
-    pressedKey: '',
     showFeedback: false,
     feedbackType: 'correct',
     feedbackMessage: '',
     results: [] as PracticeResult[],
-    keyboardLayout: [
-      'Q', 'W', 'E', 'R', 'T', 'Y',
-      'U', 'I', 'O', 'P', 'A', 'S',
-      'D', 'F', 'G', 'H', 'J', 'K',
-      'L', 'Z', 'X', 'C', 'V', 'B',
-      'N', 'M'
-    ],
+    inputFocus: true,
     // 音频播放相关
     audioContext: null as any,
-    speechSupported: false
+    speechSupported: false,
+    // 键盘布局 - 按照手机键盘标准布局
+    keyboardRow1: ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+    keyboardRow2: ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+    keyboardRow3: ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
   },
 
   // 计算属性
@@ -55,7 +52,8 @@ Page({
     const shuffledWords = this.shuffleArray([...practiceWords]);
     
     this.setData({
-      words: shuffledWords
+      words: shuffledWords,
+      inputFocus: true
     });
 
     // 初始化音频功能
@@ -66,6 +64,12 @@ Page({
 
   onShow() {
     this.updateProgress();
+    // 延迟触发focus，确保页面完全加载后再聚焦
+    setTimeout(() => {
+      this.setData({
+        inputFocus: true
+      });
+    }, 300);
   },
 
   onUnload() {
@@ -247,30 +251,53 @@ Page({
     }, 2000);
   },
 
-  // 按键按下
+  // 键盘按键处理
   onKeyPress(e: any) {
-    const letter = e.currentTarget.dataset.letter;
+    const key = e.currentTarget.dataset.key;
+    const currentInput = this.data.currentInput;
+    
+    console.log('按键按下:', key);
+    
+    if (key === 'delete') {
+      // 删除最后一个字符
+      this.setData({
+        currentInput: currentInput.slice(0, -1)
+      });
+    } else if (key === 'space') {
+      // 添加空格
+      if (currentInput.length < 50) {
+        this.setData({
+          currentInput: currentInput + ' '
+        });
+      }
+    } else if (key === 'submit') {
+      // 提交单词
+      this.submitWord();
+    } else {
+      // 添加字母
+      if (currentInput.length < 50) {
+        this.setData({
+          currentInput: currentInput + key.toLowerCase()
+        });
+      }
+    }
+  },
+
+  // 手动触发输入框聚焦（保留用于光标闪烁）
+  focusInput() {
+    console.log('激活输入状态');
     this.setData({
-      pressedKey: letter,
-      currentInput: this.data.currentInput + letter.toLowerCase()
+      inputFocus: true
     });
   },
 
-  // 按键释放
-  onKeyRelease() {
-    this.setData({
-      pressedKey: ''
-    });
-  },
-
-  // 清除输入
   clearInput() {
     this.setData({
-      currentInput: ''
+      currentInput: '',
+      inputFocus: true
     });
   },
 
-  // 提交单词
   submitWord() {
     const { currentInput, words, currentIndex } = this.data;
     
@@ -280,32 +307,32 @@ Page({
     }
 
     const currentWord = words[currentIndex];
-    const isCorrect = currentInput.toLowerCase() === currentWord.toLowerCase();
-    
+    const userInput = currentInput.trim().toLowerCase();
+    const correctWord = currentWord.toLowerCase();
+    const isCorrect = userInput === correctWord;
+
     // 记录结果
     const result: PracticeResult = {
       word: currentWord,
-      userInput: currentInput,
+      userInput: currentInput.trim(),
       isCorrect: isCorrect
     };
 
     const newResults = [...this.data.results, result];
+    
     this.setData({
-      results: newResults
+      results: newResults,
+      currentInput: ''
     });
 
     // 显示反馈
     this.showFeedback(isCorrect, currentWord);
-
-    // 延迟进入下一个单词
-    setTimeout(() => {
-      this.nextWord();
-    }, 2000);
   },
 
-  // 显示反馈
   showFeedback(isCorrect: boolean, correctWord: string) {
-    const message = isCorrect ? '正确！' : `错误！正确答案是：${correctWord}`;
+    const message = isCorrect 
+      ? '恭喜答对了！' 
+      : `正确答案是：${correctWord}`;
     
     this.setData({
       showFeedback: true,
@@ -313,52 +340,56 @@ Page({
       feedbackMessage: message
     });
 
+    // 2秒后隐藏反馈并进入下一题
     setTimeout(() => {
       this.setData({
         showFeedback: false
       });
+      setTimeout(() => {
+        this.nextWord();
+      }, 500);
     }, 2000);
   },
 
-  // 下一个单词
   nextWord() {
     const { currentIndex, words } = this.data;
     
-    if (currentIndex >= words.length - 1) {
-      // 完成所有单词，跳转到结果页
+    if (currentIndex < words.length - 1) {
+      this.setData({
+        currentIndex: currentIndex + 1,
+        inputFocus: false
+      }, () => {
+        // 进入下一题时，延迟聚焦确保页面更新完成
+        setTimeout(() => {
+          this.setData({
+            inputFocus: true
+          });
+        }, 200);
+      });
+      this.updateProgress();
+    } else {
+      // 练习结束
       this.finishPractice();
-      return;
     }
-
-    this.setData({
-      currentIndex: currentIndex + 1,
-      currentInput: ''
-    });
-
-    this.updateProgress();
   },
 
-  // 完成练习
   finishPractice() {
-    // 保存练习结果
+    // 保存练习结果到存储
     wx.setStorageSync('practiceResults', this.data.results);
     
-    // 跳转到结果页
+    // 跳转到结果页面
     wx.redirectTo({
       url: '/pages/result/result'
     });
   },
 
-  // 更新进度
   updateProgress() {
-    // 触发页面更新以重新计算计算属性
+    // 更新进度信息，触发计算属性重新计算
     this.setData({
-      progressPercentage: this.progressPercentage,
-      accuracy: this.accuracy
+      words: this.data.words // 触发数据更新
     });
   },
 
-  // 随机打乱数组
   shuffleArray(array: string[]): string[] {
     const newArray = [...array];
     for (let i = newArray.length - 1; i > 0; i--) {
@@ -368,7 +399,6 @@ Page({
     return newArray;
   },
 
-  // 显示Toast消息
   showToast(message: string, theme: 'success' | 'warning' | 'error' | 'loading' = 'success') {
     Toast({
       context: this,
@@ -377,5 +407,5 @@ Page({
       theme: theme,
       direction: 'column',
     });
-  }
-}); 
+  },
+});

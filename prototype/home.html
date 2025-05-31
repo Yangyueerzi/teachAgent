@@ -8,40 +8,144 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #f8faff 0%, #e8f2ff 50%, #f0f8ff 100%);
             margin: 0;
             padding: 0;
             height: 100vh;
             overflow: hidden;
+            position: relative;
         }
+        
+        /* 背景装饰 */
+        .bg-decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .shape1 {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #0052d9, #0085ff);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .shape2 {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00a870, #00d084);
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+        
+        .shape3 {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff6b35, #ff8c42);
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-20px) rotate(120deg);
+            }
+            66% {
+                transform: translateY(10px) rotate(240deg);
+            }
+        }
+        
         .status-bar {
             height: 44px;
-            background: #fff;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 20px;
             font-size: 14px;
             font-weight: 600;
+            position: relative;
+            z-index: 10;
+            border-bottom: 1px solid rgba(229, 229, 229, 0.3);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
+        
         .main-content {
             height: calc(100vh - 44px - 80px);
             overflow-y: auto;
             padding: 20px;
+            position: relative;
+            z-index: 5;
         }
+        
+        .welcome-section {
+            animation: slideInDown 0.8s ease-out;
+            margin-bottom: 24px;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .welcome-title {
+            background: linear-gradient(135deg, #0052d9, #0085ff, #00a870);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            animation: textShine 3s ease-in-out infinite;
+        }
+        
+        @keyframes textShine {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+        
         .tab-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             height: 80px;
-            background: #fff;
-            border-top: 1px solid #e5e5e5;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(229, 229, 229, 0.3);
             display: flex;
             justify-content: space-around;
             align-items: center;
             padding-bottom: env(safe-area-inset-bottom);
+            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.05);
+            z-index: 10;
         }
+        
         .tab-item {
             display: flex;
             flex-direction: column;
@@ -49,53 +153,231 @@
             gap: 4px;
             color: #999;
             font-size: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 12px;
         }
+        
+        .tab-item:hover {
+            transform: translateY(-2px);
+            background: rgba(0, 82, 217, 0.05);
+        }
+        
         .tab-item.active {
             color: #0052d9;
+            background: rgba(0, 82, 217, 0.1);
         }
+        
         .tab-icon {
             width: 24px;
             height: 24px;
             background-size: contain;
+            transition: transform 0.3s ease;
         }
+        
+        .tab-item:hover .tab-icon {
+            transform: scale(1.1);
+        }
+        
         .feature-card {
-            background: #fff;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
             padding: 24px;
             margin-bottom: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border: 1px solid #f0f0f0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.8s ease-out both;
         }
+        
+        .feature-card:nth-child(2) { animation-delay: 0.1s; }
+        .feature-card:nth-child(3) { animation-delay: 0.2s; }
+        .feature-card:nth-child(4) { animation-delay: 0.3s; }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.8s ease;
+        }
+        
+        .feature-card:hover::before {
+            left: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 82, 217, 0.15);
+            border-color: rgba(0, 82, 217, 0.2);
+        }
+        
+        .feature-card.disabled {
+            opacity: 0.6;
+            background: rgba(248, 250, 252, 0.9);
+        }
+        
+        .feature-card.disabled:hover {
+            transform: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+        
         .feature-icon {
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             background: linear-gradient(135deg, #0052d9, #0085ff);
-            border-radius: 12px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            animation: iconPulse 2s ease-in-out infinite;
         }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .feature-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.6s ease;
+        }
+        
+        .feature-card:hover .feature-icon::after {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .feature-icon.disabled {
+            background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+        }
+        
         .btn-primary {
             background: linear-gradient(135deg, #0052d9, #0085ff);
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 12px 24px;
+            border-radius: 12px;
+            padding: 14px 24px;
             font-size: 16px;
             font-weight: 600;
             width: 100%;
             margin-top: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.6s ease;
+        }
+        
+        .btn-primary:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
         .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,82,217,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 82, 217, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        .feature-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .feature-tag {
+            background: rgba(0, 82, 217, 0.1);
+            color: #0052d9;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            animation: tagFloat 3s ease-in-out infinite;
+        }
+        
+        .feature-tag:nth-child(2) { animation-delay: 0.5s; }
+        .feature-tag:nth-child(3) { animation-delay: 1s; }
+        
+        @keyframes tagFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
+        
+        /* 成功反馈动画 */
+        .success-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(0, 168, 112, 0.3);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- 背景装饰 -->
+    <div class="bg-decoration">
+        <div class="floating-shape shape1"></div>
+        <div class="floating-shape shape2"></div>
+        <div class="floating-shape shape3"></div>
+    </div>
+
     <!-- 状态栏 -->
     <div class="status-bar">
         <span>9:41</span>
@@ -106,55 +388,63 @@
     <!-- 主要内容 -->
     <div class="main-content">
         <!-- 欢迎区域 -->
-        <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">欢迎使用辅导助手</h1>
-            <p class="text-gray-600">让学习变得更简单有趣</p>
+        <div class="welcome-section">
+            <h1 class="welcome-title">欢迎使用辅导助手</h1>
+            <p class="text-gray-600 text-lg">让学习变得更简单有趣 ✨</p>
         </div>
 
         <!-- 单词听写功能卡片 -->
         <div class="feature-card">
             <div class="feature-icon">
-                <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+                <svg width="28" height="28" fill="white" viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
             </div>
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">单词听写</h3>
-            <p class="text-gray-600 text-sm mb-4">拍照识别单词表，智能语音听写练习</p>
-            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
-                <span>📸 拍照识别</span>
-                <span>🔊 语音播报</span>
-                <span>✅ 智能校验</span>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">单词听写练习</h3>
+            <p class="text-gray-600 text-sm mb-4">拍照识别单词表，智能语音听写练习，让孩子轻松掌握拼写</p>
+            <div class="feature-tags">
+                <span class="feature-tag">📸 拍照识别</span>
+                <span class="feature-tag">🔊 语音播报</span>
+                <span class="feature-tag">✅ 智能校验</span>
             </div>
-            <button class="btn-primary">开始听写</button>
+            <button class="btn-primary" onclick="startDictation()">开始听写练习</button>
         </div>
 
         <!-- 即将推出功能 -->
-        <div class="feature-card opacity-60">
-            <div class="feature-icon" style="background: #ccc;">
-                <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+        <div class="feature-card disabled">
+            <div class="feature-icon disabled">
+                <svg width="28" height="28" fill="white" viewBox="0 0 24 24">
                     <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
                 </svg>
             </div>
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">数学口算</h3>
-            <p class="text-gray-600 text-sm mb-4">即将推出，敬请期待</p>
-            <button class="btn-primary" style="background: #ccc;" disabled>敬请期待</button>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">数学口算练习</h3>
+            <p class="text-gray-600 text-sm mb-4">即将推出数学口算功能，敬请期待 🚀</p>
+            <div class="feature-tags">
+                <span class="feature-tag" style="background: rgba(156, 163, 175, 0.2); color: #6b7280;">🧮 口算练习</span>
+                <span class="feature-tag" style="background: rgba(156, 163, 175, 0.2); color: #6b7280;">⏱️ 计时模式</span>
+            </div>
+            <button class="btn-primary" disabled>敬请期待</button>
         </div>
 
-        <div class="feature-card opacity-60">
-            <div class="feature-icon" style="background: #ccc;">
-                <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+        <div class="feature-card disabled">
+            <div class="feature-icon disabled">
+                <svg width="28" height="28" fill="white" viewBox="0 0 24 24">
                     <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
                 </svg>
             </div>
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">阅读理解</h3>
-            <p class="text-gray-600 text-sm mb-4">即将推出，敬请期待</p>
-            <button class="btn-primary" style="background: #ccc;" disabled>敬请期待</button>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">阅读理解训练</h3>
+            <p class="text-gray-600 text-sm mb-4">即将推出阅读理解功能，敬请期待 📚</p>
+            <div class="feature-tags">
+                <span class="feature-tag" style="background: rgba(156, 163, 175, 0.2); color: #6b7280;">📖 文章阅读</span>
+                <span class="feature-tag" style="background: rgba(156, 163, 175, 0.2); color: #6b7280;">🤔 理解问答</span>
+            </div>
+            <button class="btn-primary" disabled>敬请期待</button>
         </div>
     </div>
 
     <!-- 底部导航栏 -->
     <div class="tab-bar">
-        <div class="tab-item active">
+        <div class="tab-item active" onclick="switchTab(this)">
             <div class="tab-icon">
                 <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
@@ -162,7 +452,7 @@
             </div>
             <span>辅导</span>
         </div>
-        <div class="tab-item">
+        <div class="tab-item" onclick="switchTab(this)">
             <div class="tab-icon">
                 <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -171,5 +461,77 @@
             <span>我的</span>
         </div>
     </div>
+
+    <script>
+        // 开始听写练习
+        function startDictation() {
+            const button = event.target;
+            
+            // 添加点击波纹效果
+            const rect = button.getBoundingClientRect();
+            const ripple = document.createElement('span');
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.className = 'success-ripple';
+            
+            button.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+            
+            // 模拟跳转
+            setTimeout(() => {
+                alert('即将跳转到拍照上传页面 📷');
+            }, 300);
+        }
+        
+        // 切换Tab
+        function switchTab(element) {
+            // 移除所有active状态
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 添加active状态到当前点击的tab
+            element.classList.add('active');
+            
+            // 添加点击反馈
+            element.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                element.style.transform = '';
+            }, 150);
+        }
+        
+        // 页面加载动画
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为功能卡片添加交错入场动画
+            const cards = document.querySelectorAll('.feature-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            // 添加欢迎文字的打字机效果
+            const welcomeText = document.querySelector('.welcome-section p');
+            const text = welcomeText.textContent;
+            welcomeText.textContent = '';
+            
+            setTimeout(() => {
+                let i = 0;
+                const timer = setInterval(() => {
+                    welcomeText.textContent += text[i];
+                    i++;
+                    if (i >= text.length) {
+                        clearInterval(timer);
+                    }
+                }, 50);
+            }, 800);
+        });
+    </script>
 </body>
 </html> 
